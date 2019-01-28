@@ -26,7 +26,7 @@ namespace SalesWebMvc.Services
         {
             //obj.Department = _context.Department.First(); nao preciso mais
             _context.Add(obj);
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Seller> FindByIdAsync(int id)
@@ -36,9 +36,17 @@ namespace SalesWebMvc.Services
 
         public async Task RemoveAsync(int id)
         {
-            var obj = await _context.Seller.FindAsync(id);
-            _context.Seller.Remove(obj);
-           await _context.SaveChangesAsync();
+            try
+            {
+                var obj = await _context.Seller.FindAsync(id);
+                _context.Seller.Remove(obj);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+                //throw new IntegrityException(ex.Message);
+                throw new IntegrityException("Can't delete seller because he/she has sales.");
+            }
         }
 
         public async Task UpadateAsync(Seller obj)
@@ -51,7 +59,7 @@ namespace SalesWebMvc.Services
             try
             {
                 _context.Update(obj);
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
