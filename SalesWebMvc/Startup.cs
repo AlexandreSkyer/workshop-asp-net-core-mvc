@@ -52,7 +52,7 @@ builder.MigrationsAssembly("SalesWebMvc")));
 
             services.AddScoped<DepartmentService>();
 
-          
+            services.AddScoped<SalesRecordService>();
 
         }
 
